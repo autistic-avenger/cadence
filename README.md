@@ -1,5 +1,7 @@
+
+
 <p align="center">
-  <img width="180" alt="Cadence" src="https://github.com/user-attachments/assets/3fe3e4ad-0175-447a-bb16-7df8f99e8ef0" />
+  <img width="180" alt="Cadence" src="https://github.com/user-attachments/assets/c62cacc7-d3d7-490a-92af-3c71ab4f6d3e" />
 </p>
 
 <h1 align="center">Cadence</h1>
