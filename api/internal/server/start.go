@@ -24,6 +24,8 @@ func StartBackend(port string) error {
 
 	r.GET("/auth/google",auth.HandleAuth)
 
+	r.GET("/auth/google/callback",auth.HandleCallback)
+
 
 	err := r.Run(":"+port)
 	
