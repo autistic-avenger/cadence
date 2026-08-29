@@ -1,7 +1,13 @@
+"use client"
+import axios from "axios";
 import { FaGoogle } from "react-icons/fa";
 
 
 function Login() {
+    async function handleGoogleAuth(){
+        window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`
+    } 
+
     return (
     <div className='relative text-4xl sm:text-6xl w-full h-screen md:text-9xl flex justify-center items-center'>
         <img src="/404.jpg" alt="bg" className='object-cover h-screen w-screen' />
@@ -11,7 +17,7 @@ function Login() {
                 <div className='relative w-full flex overflow-hidden h-full bg-white/40 rounded-2xl'>
                     <img src="/login.jpg" alt="login-bg" className='object-cover' />
                     <div className='absolute bottom-2 px-1.5 w-full h-10'>
-                        <div className='w-full h-full flex justify-center items-center cursor-pointer text-xl bg-white/60 font-bold text-black rounded-2xl '>
+                        <div onClick={handleGoogleAuth} className='w-full h-full flex justify-center items-center cursor-pointer text-xl bg-white/60 font-bold text-black rounded-2xl '>
                             <FaGoogle className="mr-2"/>
                             Continue with Google
                         </div>
