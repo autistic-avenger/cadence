@@ -1,9 +1,23 @@
+"use client"
 import Navbar from "@/ui/components/Navbar";
-import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Home() {
+  const searchParams = useSearchParams()
+  const router       = useRouter()
+  useEffect(()=>{
+    let err = searchParams.get("error")
+    if (err == "loginFail"){
+      toast.error("Login Failed")
+      router.replace("/")
+    } 
+  },[])
   return (
     <div>
+      <Toaster position="top-center"/>
       <Navbar/>
       <div className="relative w-full h-screen ">
         
