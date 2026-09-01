@@ -1,17 +1,16 @@
 package auth
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"os"
-
 	"github.com/gin-gonic/gin"
 )
 
+type UserInfo struct{
+	Name string `json:"name"`
+	Email string `json:"email"`
+}
 
 type AcessTokenResponse struct{
 	AccessToken string  `json:"access_token"` 
@@ -38,39 +37,3 @@ func HandleAuth(c *gin.Context){
 }
 
 
-func HandleCallback(c *gin.Context){
-	code := c.Query("code") 
-	p := url.Values{}
-	p.Add("client_id",os.Getenv("GOOGLE_CLIENT_ID"))
-	p.Add("client_secret",os.Getenv("GOOGLE_CLIENT_SECRET"))
-	p.Add("code",code)
-	p.Add("grant_type","authorization_code")
-	p.Add("redirect_uri",os.Getenv("BACKEND_URL")+"/auth/google/callback")
-
-	getTokenURI := GOOGLE_TOKEN + "?" + p.Encode()
-
-	fmt.Println(getTokenURI)
-
-	client := http.Client{}
-	req,err := http.NewRequest("POST",getTokenURI,nil)
-	if err!=nil{
-		c.Redirect(http.StatusTemporaryRedirect,os.Getenv("FRONTEND_URL")+"?error=loginFail")
-	}
-	
-	res,err := client.Do(req)
-	if err!=nil{
-		c.Redirect(http.StatusTemporaryRedirect,os.Getenv("FRONTEND_URL")+"?error=loginFail")
-	}
-	jsonString,err := io.ReadAll(res.Body)
-	if err!=nil{
-		c.Redirect(http.StatusTemporaryRedirect,os.Getenv("FRONTEND_URL")+"?error=loginFail")
-	}
-
-	var RESPONSE AcessTokenResponse
-	err = json.NewDecoder(bytes.NewBuffer(jsonString)).Decode(&RESPONSE)
-	if err!=nil{
-		c.Redirect(http.StatusTemporaryRedirect,os.Getenv("FRONTEND_URL")+"?error=loginFail")
-	}
-
-
-}

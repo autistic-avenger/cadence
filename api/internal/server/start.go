@@ -26,6 +26,8 @@ func StartBackend(port string) error {
 
 	r.GET("/auth/google/callback",auth.HandleCallback)
 
+	r.GET("/auth/verify",auth.VerifyJWT)
+
 
 	err := r.Run(":"+port)
 	
