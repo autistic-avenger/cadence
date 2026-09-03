@@ -14,6 +14,7 @@ func VerifyJWT(c *gin.Context) {
 		c.JSON(http.StatusBadRequest,gin.H{
 			"error":"Not LoggedIN",
 		})
+		return
 	}
 
 	_ ,err = jwt.Parse(tokenStr,func(t *jwt.Token) (any, error) {
@@ -25,6 +26,7 @@ func VerifyJWT(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError,gin.H{
 			"error":"error parsing jwt",
 		})
+		return
 	}
 
 	

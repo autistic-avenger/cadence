@@ -18,6 +18,7 @@ func HandleCallback(c *gin.Context) {
 	errors := c.Query("error")
 	if errors != "" {
 		c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"?error=loginFail")
+		return
 	}
 	p := url.Values{}
 	p.Add("client_id", os.Getenv("GOOGLE_CLIENT_ID"))
@@ -34,21 +35,25 @@ func HandleCallback(c *gin.Context) {
 	req, err := http.NewRequest("POST", getTokenURI, nil)
 	if err != nil {
 		c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"?error=loginFail")
+		return
 	}
 
 	res, err := client.Do(req)
 	if err != nil {
 		c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"?error=loginFail")
+		return
 	}
 	jsonString, err := io.ReadAll(res.Body)
 	if err != nil {
 		c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"?error=loginFail")
+		return
 	}
 
 	var RESPONSE AcessTokenResponse
 	err = json.NewDecoder(bytes.NewBuffer(jsonString)).Decode(&RESPONSE)
 	if err != nil {
 		c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"?error=loginFail")
+		return
 	}
 
 	token, _, err := jwt.NewParser().ParseUnverified(
@@ -57,6 +62,7 @@ func HandleCallback(c *gin.Context) {
 	)
 	if err != nil {
 		c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"?error=loginFail")
+		return
 	}
 
 	var userData UserInfo
@@ -72,6 +78,7 @@ func HandleCallback(c *gin.Context) {
 	jwtToken ,err := signedToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err!=nil{
 		c.Redirect(http.StatusTemporaryRedirect, os.Getenv("FRONTEND_URL")+"?error=loginFail")
+		return
 	}
 
 	c.SetCookie("token",jwtToken,34560000,"/",os.Getenv("DOMAIN"),false,true)
