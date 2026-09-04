@@ -1,4 +1,5 @@
 "use client"
+import Hero from "@/ui/components/Hero";
 import Navbar from "@/ui/components/Navbar";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
@@ -42,8 +43,10 @@ export default function Home() {
       <div className="relative w-full h-screen ">
         
         <div className="absolute bottom-0 w-full h-[50%] bg-linear-to-t from-white from-15% to-transparent z-2"></div>
+        <img src="/404.jpg" alt="hero-bg" className=" absolute -z-9 object-cover h-full w-full select-none [-webkit-user-drag:none]"/>  
 
-        <img src="/hero_bg.jpg" alt="hero-bg" className="object-cover h-full w-full select-none [-webkit-user-drag:none]"/>      
+
+        <Hero/>
       </div>
     </div>
   );
