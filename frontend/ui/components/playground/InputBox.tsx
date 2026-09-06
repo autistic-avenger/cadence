@@ -1,13 +1,23 @@
 "use client"
 
+import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import VideoCard from "./VideoCard";
 
+interface InfoResponse {
+    title: string
+		thumbnail: string
+		author: string
+		url: string
 
-export default function InputBox(setVideoArr:any) {
+}
+
+export default function InputBox({setVideoArr}:any) {
     const [link ,setLink] = useState<string>("")
-    
-    function HandleClick(){
+    const YoutubeURL = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=K78QplOC8QQ&format=json"
+
+    async function HandleClick(){
         let linkCopy = link
         if (linkCopy == ""){
             return
@@ -20,6 +30,24 @@ export default function InputBox(setVideoArr:any) {
             toast.error("Invalid Link")
             return
         }
+
+        try{
+          const response = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/video",{
+            params:{
+              uid:vidID[1]
+            }
+          })
+
+          const jsonRes = response.data as InfoResponse
+          setVideoArr((a:any)=>{
+            return [<VideoCard key={vidID[1]} thumbnailUrl={jsonRes.thumbnail} title={jsonRes.title} />,...a]
+          })
+
+        }catch(error){
+          toast.error(`Error Adding Video${error}`)
+        }
+        
+
 
     }
     return (

@@ -2,8 +2,10 @@ package server
 
 import (
 	"cadance/internal/auth"
+	youtubeapi "cadance/internal/youtubeAPI"
 	"fmt"
 	"os"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -27,6 +29,8 @@ func StartBackend(port string) error {
 	r.GET("/auth/google/callback",auth.HandleCallback)
 
 	r.GET("/auth/verify",auth.VerifyJWT)
+
+	r.GET("/api/video",youtubeapi.GetInfo)
 
 
 	err := r.Run(":"+port)
