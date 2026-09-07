@@ -1,12 +1,8 @@
-import React from 'react'
-interface VideoCard{
-    thumbnailUrl:string
-    title:string
-} 
+import { cardInfo } from '@/app/playground/page'
 
 
 
-export default function VideoCard({thumbnailUrl,title}:VideoCard) {
+export default function VideoCard({thumbnailUrl,title,videoId,creator}:cardInfo) {
   return (
     <div className='flex justify-center my-4 items-center w-full h-50 '>
         <div className='h-full w-180 bg-blue-300/40 rounded-2xl backdrop-blur-sm p-1'>
@@ -21,7 +17,12 @@ export default function VideoCard({thumbnailUrl,title}:VideoCard) {
                             {title}
                         </h1>
                     </div>
-                    <div className='h-full flex justify-center items-end w-full'>
+                    
+                    <div className='h-8 font-[Caacupe_One] text-xl line-clamp-1'>
+                        <span className='text-blue-900'>By </span>- {creator}
+                    </div>
+
+                    <div className='h-full flex-1 flex justify-center items-end w-full'>
                         <div className='h-12 flex justify-end w-full'>
                             <div className='h-full cursor-pointer active:bg-green-400 flex justify-center items-center w-25 rounded-xl bg-green-300 active:scale-95 duration-200'>
                                 <span className='font-[Caacupe_One] text-2xl  select-none '>Create</span>

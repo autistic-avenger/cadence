@@ -61,6 +61,7 @@ func GetInfo(c *gin.Context) {
 		"thumbnail":INFO.ThumbnailURI,
 		"author":INFO.Author,
 		"url":videoURL,
+		"creator":INFO.Author,
 	})
 
 }

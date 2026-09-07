@@ -4,10 +4,16 @@ import VideoCard from '@/ui/components/playground/VideoCard'
 import { useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 
+export interface cardInfo{
+  thumbnailUrl:string
+  title:string
+  videoId:string
+  creator:string
+}
 
 
 export default function Playground() {
-  const [videoArr,setVideoArr] = useState<React.ReactNode[]>([])
+  const [videoLinks,setVideoLinks] = useState<cardInfo[]>([])
 
   return (
     <div>
@@ -17,17 +23,19 @@ export default function Playground() {
         alt="hero-bg"
         className="fixed top-0 -z-9 object-cover h-full w-full select-none [-webkit-user-drag:none]"
       />
-      <InputBox setVideoArr={setVideoArr} />
+      <InputBox setVideoLinks={setVideoLinks} videoLinks={videoLinks} />
       
 
-      {videoArr.length == 0 && <div className='w-full h-140 text-white/80 flex justify-center items-center'>
+      {videoLinks.length == 0 && <div className='w-full h-140 text-white/80 flex justify-center items-center'>
           <h1>
             Nothing to Show.
           </h1>
         </div>}
 
 
-      {videoArr}
+      {videoLinks.map((id:cardInfo)=>{
+        return <VideoCard key={id.videoId} thumbnailUrl={id.thumbnailUrl} title={id.title} videoId={id.videoId} creator={id.creator}  />
+      })}
     </div>
   );
 }

@@ -3,17 +3,17 @@
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import VideoCard from "./VideoCard";
+import { cardInfo } from "@/app/playground/page";
 
 interface InfoResponse {
     title: string
 		thumbnail: string
-		author: string
+		creator: string
 		url: string
 
 }
 
-export default function InputBox({setVideoArr}:any) {
+export default function InputBox({setVideoLinks ,videoLinks}:{setVideoLinks:any,videoLinks:cardInfo[]}) {
     const [link ,setLink] = useState<string>("")
     const YoutubeURL = "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=K78QplOC8QQ&format=json"
 
@@ -31,6 +31,19 @@ export default function InputBox({setVideoArr}:any) {
             return
         }
 
+        const duplicate = videoLinks.some((link)=>{
+          if (link.videoId== vidID[1]){
+            return true
+          }
+          return false
+        })
+        if (duplicate){
+          toast.error("Already Added!")
+          return 
+        }
+
+
+
         try{
           const response = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/video",{
             params:{
@@ -39,8 +52,15 @@ export default function InputBox({setVideoArr}:any) {
           })
 
           const jsonRes = response.data as InfoResponse
-          setVideoArr((a:any)=>{
-            return [<VideoCard key={vidID[1]} thumbnailUrl={jsonRes.thumbnail} title={jsonRes.title} />,...a]
+
+          setVideoLinks((prev:cardInfo[])=>{
+            const vid:cardInfo = {
+              title:jsonRes.title,
+              thumbnailUrl:jsonRes.thumbnail,
+              creator:jsonRes.creator,
+              videoId:vidID[1],
+            }
+            return [vid,...prev]
           })
 
         }catch(error){
