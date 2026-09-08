@@ -18,6 +18,12 @@ type YoutubeResponse struct{
 	ThumbnailURI string `json:"thumbnail_url"`
 }
 
+type EmailNameClaim struct{
+	Email string `json:"email"`
+	Name string `json:"name"`
+	jwt.RegisteredClaims
+}
+
 func AddVideoInfo(c *gin.Context) {
 	vidID := c.Query("uid")
 	if vidID == ""{
@@ -65,7 +71,7 @@ func AddVideoInfo(c *gin.Context) {
 		return 
 	}
 
-	token,err := jwt.ParseWithClaims(unverifiedJWT,jwt.MapClaims{},jwthelp.GetSecret)
+	token,err := jwt.ParseWithClaims(unverifiedJWT,&EmailNameClaim{},jwthelp.GetSecret)
 	if err!=nil{
 		fmt.Println("Bad Token")
 		c.SetCookie("token","",-1,"/",os.Getenv("DOMAIN"),false,true)
@@ -73,8 +79,8 @@ func AddVideoInfo(c *gin.Context) {
 		return 
 	}
 	
-	claims := token.Claims.(jwt.MapClaims)
-	fmt.Println(claims["email"],": REQUESTED :",videoURL)
+	claims := token.Claims.(*EmailNameClaim)
+	fmt.Println(claims.Email)
 
 
 	c.JSON(http.StatusOK,gin.H{
