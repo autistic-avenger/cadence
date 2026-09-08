@@ -48,7 +48,8 @@ export default function InputBox({setVideoLinks ,videoLinks}:{setVideoLinks:any,
           const response = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/video",{
             params:{
               uid:vidID[1]
-            }
+            },
+            withCredentials:true
           })
 
           const jsonRes = response.data as InfoResponse

@@ -30,7 +30,7 @@ func StartBackend(port string) error {
 
 	r.GET("/auth/verify",auth.VerifyJWT)
 
-	r.GET("/api/video",youtubeapi.GetInfo)
+	r.GET("/api/video",youtubeapi.AddVideoInfo)
 
 
 	err := r.Run(":"+port)

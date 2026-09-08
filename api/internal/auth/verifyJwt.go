@@ -1,6 +1,7 @@
 package auth
 
 import (
+	jwthelp "cadance/internal/jwtHelp"
 	"net/http"
 	"os"
 
@@ -17,9 +18,7 @@ func VerifyJWT(c *gin.Context) {
 		return
 	}
 
-	_ ,err = jwt.Parse(tokenStr,func(t *jwt.Token) (any, error) {
-		return []byte(os.Getenv("JWT_SECRET")),nil
-	})
+	_ ,err = jwt.Parse(tokenStr,jwthelp.GetSecret)
 
 	if err!=nil{
 		c.SetCookie("token","",-1,"/",os.Getenv("DOMAIN"),false,true)

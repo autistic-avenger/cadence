@@ -1,11 +1,15 @@
 package youtubeapi
 
 import (
+	jwthelp "cadance/internal/jwtHelp"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type YoutubeResponse struct{
@@ -14,7 +18,7 @@ type YoutubeResponse struct{
 	ThumbnailURI string `json:"thumbnail_url"`
 }
 
-func GetInfo(c *gin.Context) {
+func AddVideoInfo(c *gin.Context) {
 	vidID := c.Query("uid")
 	if vidID == ""{
 		c.JSON(http.StatusBadRequest,gin.H{
@@ -54,7 +58,24 @@ func GetInfo(c *gin.Context) {
 		})
 		return
 	}
-	//TODO: Add to DB
+	unverifiedJWT ,err := c.Cookie("token")
+	if err!=nil{
+		fmt.Println("No Token Found")
+		c.JSON(http.StatusBadRequest,nil)
+		return 
+	}
+
+	token,err := jwt.ParseWithClaims(unverifiedJWT,jwt.MapClaims{},jwthelp.GetSecret)
+	if err!=nil{
+		fmt.Println("Bad Token")
+		c.SetCookie("token","",-1,"/",os.Getenv("DOMAIN"),false,true)
+		c.Redirect(http.StatusTemporaryRedirect,os.Getenv("FRONTEND_URL"))
+		return 
+	}
+	
+	claims := token.Claims.(jwt.MapClaims)
+	fmt.Println(claims["email"],": REQUESTED :",videoURL)
+
 
 	c.JSON(http.StatusOK,gin.H{
 		"title":INFO.Title,
