@@ -103,6 +103,15 @@ func AddVideoInfo(c *gin.Context) {
 		url VARCHAR(70),
 		creator VARCHAR(60)
 	)`
+
+	err = dbCursor.Ping()
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"error":"No Ping from DB!.",
+		})
+		fmt.Println(err)
+		return
+	}
 	
 	dbRes , err := dbCursor.Exec(createTable)
 	if err!=nil{
