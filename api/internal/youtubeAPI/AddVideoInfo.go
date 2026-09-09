@@ -82,7 +82,8 @@ func AddVideoInfo(c *gin.Context) {
 		return 
 	}
 	
-	_ = token.Claims.(*EmailNameClaim)
+	claims := token.Claims.(*EmailNameClaim)
+
 	
 	jobID := uuid.New().String()
 
@@ -103,11 +104,28 @@ func AddVideoInfo(c *gin.Context) {
 	}
 
 
+	data := db.YoutubeDbInfo{
+		Email: claims.Email,
+		Title: INFO.Title,
+		Thumbnail: INFO.ThumbnailURI,
+		Url: videoURL,
+		Creator:INFO.Author ,
+		JobID: jobID,
+	}
+	err = db.AddVideoInfo(dbCon,data)
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"error":"Error Adding to Table.",
+		})
+		return 
+	}
+
+
 
 	c.JSON(http.StatusOK,gin.H{
+		"email":claims.Email,
 		"title":INFO.Title,
 		"thumbnail":INFO.ThumbnailURI,
-		"author":INFO.Author,
 		"url":videoURL,
 		"creator":INFO.Author,
 		"jobID":jobID,
