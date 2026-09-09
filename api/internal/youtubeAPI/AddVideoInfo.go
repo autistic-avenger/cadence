@@ -2,6 +2,7 @@ package youtubeapi
 
 import (
 	jwthelp "cadance/internal/jwtHelp"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,6 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
+	_ "github.com/lib/pq" 
 )
 
 type YoutubeResponse struct{
@@ -79,8 +82,38 @@ func AddVideoInfo(c *gin.Context) {
 		return 
 	}
 	
-	claims := token.Claims.(*EmailNameClaim)
-	fmt.Println(claims.Email)
+	_ = token.Claims.(*EmailNameClaim)
+
+	dbCursor, err := sql.Open("postgres",os.Getenv("POSTGRES_URI"))
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"error":"Error connecting to db!",
+		})
+		return
+	}
+	defer dbCursor.Close()
+	jobID := uuid.New().String()
+
+	createTable := `
+	CREATE TABLE IF NOT EXISTS userVideos (
+		email VARCHAR(50),
+		jobid VARCHAR(36),
+		title VARCHAR(100),
+		thumbnail VARCHAR(70),
+		url VARCHAR(70),
+		creator VARCHAR(60)
+	)`
+	
+	dbRes , err := dbCursor.Exec(createTable)
+	if err!=nil{
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"error":"Error Making Request to db!",
+		})
+		fmt.Println(os.Getenv("POSTGRES_URI"))
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(dbRes.RowsAffected())
 
 
 	c.JSON(http.StatusOK,gin.H{
@@ -89,6 +122,7 @@ func AddVideoInfo(c *gin.Context) {
 		"author":INFO.Author,
 		"url":videoURL,
 		"creator":INFO.Author,
+		"jobID":jobID,
 	})
 
 }
