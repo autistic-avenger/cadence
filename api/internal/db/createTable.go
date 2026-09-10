@@ -10,7 +10,8 @@ func CreateTable(dbCursor *sql.DB) error {
 			title VARCHAR(100),
 			thumbnail VARCHAR(70),
 			url VARCHAR(70),
-			creator VARCHAR(60)
+			creator VARCHAR(60),
+			videoid VARCHAR(20),
 		)`
 
 	_, err := dbCursor.Exec(createTable)

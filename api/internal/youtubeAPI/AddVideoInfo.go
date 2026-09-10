@@ -111,6 +111,7 @@ func AddVideoInfo(c *gin.Context) {
 		Url: videoURL,
 		Creator:INFO.Author ,
 		JobID: jobID,
+		VideoId: vidID,
 	}
 	err = db.AddVideoInfo(dbCon,data)
 	if err!=nil{

@@ -20,6 +20,7 @@ interface GetVideosResponse{
   title:string
   thumbnail:string
   url:string
+  videoId?:string
   creator:string
   jobID:string
 }
@@ -42,6 +43,7 @@ export default function Playground() {
             let cardInfo:cardInfo = {
               thumbnailUrl :vid.thumbnail,
               title:vid.title,
+              videoId:vid.videoId,
               creator:vid.creator,
               jobId:vid.jobID,
               email:vid.email,
