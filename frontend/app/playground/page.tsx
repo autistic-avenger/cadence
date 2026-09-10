@@ -31,8 +31,6 @@ export default function Playground() {
   const [loading,setLoading] = useState<boolean>(true)
   
   useEffect(()=>{
-    try{
-
       const GetVids = async ()=>{
         const respones = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/getVideos",{
           withCredentials:true
@@ -58,13 +56,15 @@ export default function Playground() {
         }
       }
 
-      GetVids()
+      try{
+        GetVids()
+      }catch(error){
+        toast.error("Error fetching Added vids")
+      }finally{
+        setLoading(false)
+      }
+
       setLoading(false)
-    }catch(error){
-      toast.error("Error fetching Added vids")
-    }finally{
-      setLoading(false)
-    }
 
   },[])
 
