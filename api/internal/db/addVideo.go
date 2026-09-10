@@ -3,12 +3,12 @@ package db
 import "database/sql"
 
 type YoutubeDbInfo struct {
-	Email     string
-	Title     string
-	Thumbnail string
-	Url       string
-	Creator   string
-	JobID     string
+	Email     string `json:"email"`
+	Title     string `json:"title"`
+	Thumbnail string `json:"thumbnail"`
+	Url       string `json:"url"`
+	Creator   string `json:"creator"`
+	JobID     string `json:"jobID"`
 }
 
 func AddVideoInfo(dbCursor *sql.DB, info YoutubeDbInfo) error {

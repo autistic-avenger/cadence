@@ -1,19 +1,45 @@
 "use client"
 import InputBox from '@/ui/components/playground/InputBox'
 import VideoCard from '@/ui/components/playground/VideoCard'
-import { useState } from 'react'
-import { Toaster } from 'react-hot-toast'
+import axios, { AxiosError } from 'axios'
+import { useEffect, useState } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 
 export interface cardInfo{
   thumbnailUrl:string
   title:string
   videoId:string
   creator:string
+  jobId?:string
+  email?:string
+  url?:string
 }
+
 
 
 export default function Playground() {
   const [videoLinks,setVideoLinks] = useState<cardInfo[]>([])
+  const [loading,setLoading] = useState<boolean>(true)
+  
+  useEffect(()=>{
+    try{
+
+      const GetVids = async ()=>{
+        const respones = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/getVideos",{
+          withCredentials:true
+        })
+        console.log(respones.data)
+      }
+
+      GetVids()
+      setLoading(false)
+    }catch(error){
+      toast.error("Error fetching Added vids")
+    }finally{
+      setLoading(false)
+    }
+
+  },[])
 
   return (
     <div>
@@ -28,7 +54,7 @@ export default function Playground() {
 
       {videoLinks.length == 0 && <div className='w-full h-140 text-white/80 flex justify-center items-center'>
           <h1>
-            Nothing to Show.
+            {loading?"Loading...":"Nothing to Show."}
           </h1>
         </div>}
 
