@@ -3,6 +3,7 @@ package server
 import (
 	"cadance/internal/auth"
 	"cadance/internal/helpers"
+	"cadance/internal/worker"
 	youtubeapi "cadance/internal/youtubeAPI"
 	"fmt"
 	"os"
@@ -34,6 +35,8 @@ func StartBackend(port string) error {
 	r.GET("/api/video",youtubeapi.AddVideoInfo)
 
 	r.GET("/api/getVideos",helpers.GetVideos)
+
+	r.POST("/api/create",worker.StartClipProcess)
 
 	err := r.Run(":"+port)
 	
