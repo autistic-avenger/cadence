@@ -8,11 +8,20 @@ import toast, { Toaster } from 'react-hot-toast'
 export interface cardInfo{
   thumbnailUrl:string
   title:string
-  videoId:string
+  videoId?:string
   creator:string
   jobId?:string
   email?:string
   url?:string
+}
+
+interface GetVideosResponse{
+  email:string
+  title:string
+  thumbnail:string
+  url:string
+  creator:string
+  jobID:string
 }
 
 
@@ -28,9 +37,25 @@ export default function Playground() {
         const respones = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/getVideos",{
           withCredentials:true
         })
-        console.log(respones.data)
-      }
 
+        const vids = respones.data as GetVideosResponse[]
+        vids.map((vid:GetVideosResponse)=>{
+          let cardInfo:cardInfo = {
+            thumbnailUrl :vid.thumbnail,
+            title:vid.title,
+            creator:vid.creator,
+            jobId:vid.jobID,
+            email:vid.email,
+            url:vid.url
+          }
+
+          setVideoLinks((prev:cardInfo[])=>{
+            return [...prev,cardInfo]
+          })
+          
+        })
+      }
+      
       GetVids()
       setLoading(false)
     }catch(error){
