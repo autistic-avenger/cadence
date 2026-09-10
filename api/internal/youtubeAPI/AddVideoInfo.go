@@ -57,6 +57,10 @@ func AddVideoInfo(c *gin.Context) {
 		return
 	}
 	res ,err := client.Do(request)
+	if err!=nil{
+		c.String(http.StatusInternalServerError,"Error Getting Details from Youtube Api")
+		return
+	}
 	
 	var INFO YoutubeResponse
 
