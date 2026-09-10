@@ -39,23 +39,25 @@ export default function Playground() {
         })
 
         const vids = respones.data as GetVideosResponse[]
-        vids.map((vid:GetVideosResponse)=>{
-          let cardInfo:cardInfo = {
-            thumbnailUrl :vid.thumbnail,
-            title:vid.title,
-            creator:vid.creator,
-            jobId:vid.jobID,
-            email:vid.email,
-            url:vid.url
-          }
-
-          setVideoLinks((prev:cardInfo[])=>{
-            return [...prev,cardInfo]
+        if (vids!=null){
+          vids.map((vid:GetVideosResponse)=>{
+            let cardInfo:cardInfo = {
+              thumbnailUrl :vid.thumbnail,
+              title:vid.title,
+              creator:vid.creator,
+              jobId:vid.jobID,
+              email:vid.email,
+              url:vid.url
+            }
+  
+            setVideoLinks((prev:cardInfo[])=>{
+              return [...prev,cardInfo]
+            })
+            
           })
-          
-        })
+        }
       }
-      
+
       GetVids()
       setLoading(false)
     }catch(error){
