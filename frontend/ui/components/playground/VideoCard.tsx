@@ -15,7 +15,9 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
                 }
             ) 
         }catch(error){
-            toast.error("Error Creating Clips!")
+            if (axios.isAxiosError(error)){      
+                toast.error(error.response?.data.error)
+            }
         }
     }
     return (

@@ -10,7 +10,8 @@ interface InfoResponse {
 		thumbnail: string
 		creator: string
 		url: string
-
+    email:string
+    jobID:string
 }
 
 export default function InputBox({setVideoLinks ,videoLinks}:{setVideoLinks:any,videoLinks:cardInfo[]}) {
@@ -53,13 +54,14 @@ export default function InputBox({setVideoLinks ,videoLinks}:{setVideoLinks:any,
           })
 
           const jsonRes = response.data as InfoResponse
-
           setVideoLinks((prev:cardInfo[])=>{
             const vid:cardInfo = {
               title:jsonRes.title,
               thumbnailUrl:jsonRes.thumbnail,
               creator:jsonRes.creator,
               videoId:vidID[1],
+              jobId:jsonRes.jobID,
+              url:jsonRes.url
             }
             return [vid,...prev]
           })
