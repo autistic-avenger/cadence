@@ -33,41 +33,39 @@ export default function Playground() {
   
   useEffect(()=>{
       const GetVids = async ()=>{
-        const respones = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/getVideos",{
-          withCredentials:true
-        })
 
-        const vids = respones.data as GetVideosResponse[]
-        if (vids!=null){
-          vids.map((vid:GetVideosResponse)=>{
-            let cardInfo:cardInfo = {
-              thumbnailUrl :vid.thumbnail,
-              title:vid.title,
-              videoId:vid.videoId,
-              creator:vid.creator,
-              jobId:vid.jobID,
-              email:vid.email,
-              url:vid.url
-            }
-  
-            setVideoLinks((prev:cardInfo[])=>{
-              return [...prev,cardInfo]
-            })
-            
+        try{
+          const respones = await axios.get(process.env.NEXT_PUBLIC_API_URL+"/api/getVideos",{
+            withCredentials:true
           })
+  
+          const vids = respones.data as GetVideosResponse[]
+          if (vids!=null){
+            vids.map((vid:GetVideosResponse)=>{
+              let cardInfo:cardInfo = {
+                thumbnailUrl :vid.thumbnail,
+                title:vid.title,
+                videoId:vid.videoId,
+                creator:vid.creator,
+                jobId:vid.jobID,
+                email:vid.email,
+                url:vid.url
+              }
+    
+              setVideoLinks((prev:cardInfo[])=>{
+                return [...prev,cardInfo]
+              })
+              
+            })
+          }
+        }catch(error){
+          toast.error("Error fetching Added vids")
+        }finally{
+          setLoading(false)
         }
       }
 
-      try{
-        GetVids()
-      }catch(error){
-        toast.error("Error fetching Added vids")
-      }finally{
-        setLoading(false)
-      }
-
-      setLoading(false)
-
+      GetVids()
   },[])
 
   return (
