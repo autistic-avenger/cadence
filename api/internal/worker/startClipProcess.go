@@ -6,5 +6,4 @@ import (
 
 func StartClipProcess(c *gin.Context) {
 	// Add Redis ,Queues and, YT_DLP  Download mp3 ->  whisper Tiny -> Open Router
-	return
 }

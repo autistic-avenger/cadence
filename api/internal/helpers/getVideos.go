@@ -40,6 +40,17 @@ func GetVideos(c *gin.Context) {
 		c.String(http.StatusBadRequest,"DB Fetching videos error!")
 		return
 	}
+	vids = Reverse(vids)
 
 	c.JSON(http.StatusOK,vids)
+}
+
+
+
+func Reverse[T any](arr []T)[]T {
+	for i:= 0 ;i<len(arr)/2; i++{
+		arr[i] ,arr[len(arr)-1-i] = arr[len(arr)-1-i] ,arr[i] 
+	}
+
+	return arr 
 }
