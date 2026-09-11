@@ -1,8 +1,8 @@
 
 services:
   db:
-    image: postgres
-    container_name: cadence 
+    image: postgres 
+    container_name: cadence_db 
     environment:
       POSTGRES_USER: reallycreativename
       POSTGRES_PASSWORD: stronkpassword
