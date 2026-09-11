@@ -89,7 +89,7 @@ export default function Playground() {
 
 
       {videoLinks.map((id:cardInfo)=>{
-        return <VideoCard key={id.videoId} thumbnailUrl={id.thumbnailUrl} title={id.title} videoId={id.videoId} creator={id.creator}  />
+        return <VideoCard key={id.videoId} thumbnailUrl={id.thumbnailUrl} title={id.title} creator={id.creator} url={id.url} jobId={id.jobId}  />
       })}
     </div>
   );
