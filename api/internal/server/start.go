@@ -10,9 +10,21 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
+func initRedisClient() *redis.Client {
+	rc := redis.NewClient(&redis.Options{
+		Addr:     os.Getenv("REDIS_ADDR"),
+		Password: os.Getenv("REDIS_PASS"), 
+		DB:       0,  
+		Protocol: 2,
+	})
+	return rc
+}
+
 func StartBackend(port string) error {	
+	RedisClient := initRedisClient()
 	r := gin.Default()	
 
 	if port == ""{
@@ -36,7 +48,7 @@ func StartBackend(port string) error {
 
 	r.GET("/api/getVideos",helpers.GetVideos)
 
-	r.POST("/api/create",worker.StartClipProcess)
+	r.POST("/api/create",worker.QueueJob(RedisClient))
 
 	err := r.Run(":"+port)
 	

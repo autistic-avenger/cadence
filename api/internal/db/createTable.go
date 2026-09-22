@@ -11,7 +11,8 @@ func CreateTable(dbCursor *sql.DB) error {
 			thumbnail VARCHAR(70),
 			url VARCHAR(70),
 			creator VARCHAR(60),
-			videoid VARCHAR(20)
+			videoid VARCHAR(20),
+			jobstatus VARCHAR(20)
 		)`
 
 	_, err := dbCursor.Exec(createTable)

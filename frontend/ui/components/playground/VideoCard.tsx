@@ -2,15 +2,14 @@ import { cardInfo } from '@/app/playground/page'
 import axios, { AxiosError } from 'axios'
 import toast from 'react-hot-toast'
 
-
+type JobStatus = "pending" | "queued" | "downloading" | "transcribing" | "picking" | "completed" | "failed"
 
 
 export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInfo) {
     async function handleCreate(){
         try{
-            const response = await axios.post(process.env.NEXT_PUBLIC_API_URL+"/api/create",
+            await axios.post(process.env.NEXT_PUBLIC_API_URL+"/api/create",
                 {
-                    url:url,
                     jobID:jobId
                 }
             ) 

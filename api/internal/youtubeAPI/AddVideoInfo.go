@@ -116,6 +116,7 @@ func AddVideoInfo(c *gin.Context) {
 		Creator:INFO.Author ,
 		JobID: jobID,
 		VideoId: vidID,
+		JobStatus: "pending",
 	}
 	err = db.AddVideoInfo(dbCon,data)
 	if err!=nil{
