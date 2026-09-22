@@ -20,10 +20,11 @@ func StartClipProcess(c *gin.Context) {
 	err := c.ShouldBindJSON(&body)
 	if err!=nil{
 		c.JSON(http.StatusBadRequest,"Fuck YOU!")
+		return
 	}
 
 	rc := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     os.Getenv("REDIS_ADDR"),
 		Password: os.Getenv("REDIS_PASS"), 
 		DB:       0,  
 		Protocol: 2,
