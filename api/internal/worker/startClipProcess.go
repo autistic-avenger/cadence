@@ -28,15 +28,22 @@ func QueueJob(RedisClient *redis.Client) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError,gin.H{"error":"jobID Missing!"})
 			return
 		}
+
 		ctx := context.Background()
-		err = RedisClient.Get(ctx,body.JobID).Err()
-		if err==nil{
-			c.JSON(http.StatusInternalServerError,gin.H{"error":"It's Already Added"})
+
+		createdUnique,err := RedisClient.SetNX(ctx,body.JobID,"aura",-1).Result()
+		if !createdUnique {
+			c.JSON(http.StatusBadRequest,gin.H{
+				"error":"Already Queued!",	
+			})
 			return
 		}
-		err = RedisClient.Set(ctx,body.JobID,"Started",0).Err()
+
+		queueName := "videoJobs"
+		err = RedisClient.LPush(ctx,queueName,body.JobID).Err()
 		
-		
-		c.JSON(200,body)
+		c.JSON(http.StatusOK,gin.H{
+			"jobID":body.JobID,
+		})
 	}
 }
