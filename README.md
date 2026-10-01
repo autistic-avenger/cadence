@@ -12,4 +12,4 @@
   AI-powered video clipping for streams, podcasts, and long-form content.
 </p>
 
-## 🚧 Work in Progress
+
