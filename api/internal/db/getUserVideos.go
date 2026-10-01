@@ -24,6 +24,7 @@ func DbGetVideos(dbCursor *sql.DB, email string)([]YoutubeDbInfo,error){
 			&vid.Url,
 			&vid.Creator,
 			&vid.VideoId,
+			&vid.JobStatus,
 		)
 		if err!=nil{
 			return nil,err

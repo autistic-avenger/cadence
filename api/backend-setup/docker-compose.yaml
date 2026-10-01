@@ -1,15 +1,15 @@
 
 services:
-  go-backend:
-    build: ../
-    container_name: cadence_backend
-    env_file:
-      - ../.env
-    ports:
-      - '8000:8000'
-    depends_on:
-      - db
-      - redis
+  # go-backend:
+  #   build: ../
+  #   container_name: cadence_backend
+  #   env_file:
+  #     - ../.env
+  #   ports:
+  #     - '8000:8000'
+  #   depends_on:
+  #     - db
+  #     - redis
 
   db:
     image: postgres 
@@ -22,7 +22,7 @@ services:
       - mydata:/var/lib/postgresql
     ports:
 
-      - "5432:5432"
+      - "5433:5432"
   
   redis:
     image: redis:latest

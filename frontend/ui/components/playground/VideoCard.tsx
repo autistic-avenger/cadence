@@ -10,6 +10,7 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
         try{
             await axios.post(process.env.NEXT_PUBLIC_API_URL+"/api/create",
                 {
+                    url:url,
                     jobID:jobId
                 }
             ) 
