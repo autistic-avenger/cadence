@@ -2,6 +2,7 @@ package server
 
 import (
 	"cadance/internal/auth"
+	"cadance/internal/db"
 	"cadance/internal/helpers"
 	"cadance/internal/worker"
 	youtubeapi "cadance/internal/youtubeAPI"
@@ -31,6 +32,11 @@ func StartBackend(port string) error {
 		return fmt.Errorf("Port not Present.")
 	}
 	
+	dbConn, err := db.ConnectDB()
+	if err!=nil{
+		return fmt.Errorf("Error Connecting DB!")
+	}
+	
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: 	  []string{os.Getenv("FRONTEND_URL")},
 	    AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
@@ -50,9 +56,9 @@ func StartBackend(port string) error {
 
 	r.POST("/api/create",worker.QueueJob(RedisClient))
 
-	r.GET("/api/jobstatus",worker.GetStatus)
+	r.GET("/api/jobstatus",worker.GetStatusWrapper(dbConn))
 
-	err := r.Run(":"+port)
+	err = r.Run(":"+port)
 	
 	if err!= nil{
 		return err

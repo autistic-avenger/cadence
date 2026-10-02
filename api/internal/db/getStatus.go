@@ -3,6 +3,7 @@ package db
 import "database/sql"
 
 func GetStatus(dbCon *sql.DB, jobID string)(string,error){
+	defer dbCon.Close()
 	getStatusQ := `SELECT jobstatus from userVideos WHERE jobid = $1`
 
 	res ,err := dbCon.Query(getStatusQ,jobID)
