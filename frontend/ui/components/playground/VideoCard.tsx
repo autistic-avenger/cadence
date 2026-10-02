@@ -1,11 +1,35 @@
 import { cardInfo } from '@/app/playground/page'
 import axios, { AxiosError } from 'axios'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 type JobStatus = "pending" | "queued" | "downloading" | "transcribing" | "picking" | "completed" | "failed"
 
 
 export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInfo) {
+    const [jobCurrentStatus ,setJobCurrentStatus] = useState<JobStatus>("pending")
+
+    useEffect(() => {
+        const id = setInterval(() => {
+            getStatus()
+        }, 5000)
+
+        return () => clearInterval(id)
+    }, [])
+
+
+
+    async function getStatus(){
+        try{
+            let status = await axios.get<{"status":JobStatus}>(process.env.NEXT_PUBLIC_API_URL+"/api/jobstatus",{
+                params:{"jobid":jobId}
+            })
+            setJobCurrentStatus(status.data.status)
+        }catch(error){
+            toast.error("Error getting jobStatus!")
+        }
+    }
+
     async function handleCreate(){
         try{
             await axios.post(process.env.NEXT_PUBLIC_API_URL+"/api/create",
@@ -14,6 +38,7 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
                     jobID:jobId
                 }
             ) 
+            setJobCurrentStatus("queued")
         }catch(error){
             if (axios.isAxiosError(error)){      
                 toast.error(error.response?.data.error)

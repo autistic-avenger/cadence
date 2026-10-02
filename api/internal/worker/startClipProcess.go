@@ -1,6 +1,7 @@
 package worker
 
 import (
+	"cadance/internal/db"
 	"context"
 	"net/http"
 
@@ -41,7 +42,31 @@ func QueueJob(RedisClient *redis.Client) gin.HandlerFunc {
 
 		queueName := "videoJobs"
 		err = RedisClient.LPush(ctx,queueName,body.JobID).Err()
-		
+		if err != nil {
+			c.JSON(http.StatusBadRequest,gin.H{
+				"error":"LPUSH FAILED!",	
+			})
+			return
+		}
+
+
+		dbConn, err := db.ConnectDB()
+		if err != nil {
+			c.JSON(http.StatusBadRequest,gin.H{
+				"error":"queueing error ,!",	
+			})
+			return
+		}
+
+		err = db.UpdateJobStatus(dbConn,body.JobID,"queued") 
+		if err != nil {
+			c.JSON(http.StatusInternalServerError,gin.H{
+				"error":"Error Updating Status in DB!",	
+			})
+			return
+		}
+
+
 		c.JSON(http.StatusOK,gin.H{
 			"jobID":body.JobID,
 		})

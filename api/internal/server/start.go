@@ -50,6 +50,8 @@ func StartBackend(port string) error {
 
 	r.POST("/api/create",worker.QueueJob(RedisClient))
 
+	r.GET("/api/jobstatus",worker.GetStatus)
+
 	err := r.Run(":"+port)
 	
 	if err!= nil{
