@@ -2,10 +2,9 @@ package main
 
 import (
 	"cadence-worker/redishelp"
-	"context"
+	"cadence-worker/runjobs"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -17,15 +16,5 @@ func main() {
 		os.Exit(1)
 	}
 	redisClient := redishelp.ConnectRedis()
-
-
-	
-	queueName := "videoJobs"
-	for {
-		job, _ := redisClient.RPop(context.Background(),queueName).Result()
-		if job != ""{
-			fmt.Println(job)
-		}
-		time.Sleep(1*time.Second)
-	}
+	runjobs.FetchJob(redisClient)
 }
