@@ -3,6 +3,7 @@ package runjobs
 import (
 	"cadence-worker/db"
 	"cadence-worker/downloader"
+	"cadence-worker/transcriber"
 	"database/sql"
 	"fmt"
 	"os"
@@ -29,7 +30,17 @@ func ExecJob(dbConn *sql.DB, jobID string) {
 		}
 		return
 	}
-	fmt.Println("[DONE] :",jobID)
+	fmt.Println("[DOWNLOADING DONE] :",jobID)
 
+	db.AlterJobStatus(dbConn,jobID,"transcribing")
+	fmt.Println("[TRANSCRIBING] :",jobID)
 
+	err = transcriber.TransCribe(jobID)
+	if err!=nil{
+		fmt.Println("[ERROR TRANSCRIBING]: ",err)
+		db.AlterJobStatus(dbConn,jobID,"failed")
+		return
+	}
+
+	fmt.Println("[TRANSCRIBING DONE] :",jobID)
 }

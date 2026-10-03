@@ -19,7 +19,7 @@ func DownloadVideo(url string,jobId string) error {
 	dl := ytdlp.New().
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
-		Output(outputDir + "/%(title)s.%(ext)s")
+		Output(outputDir + "/video.%(ext)s")
 	
 	_,err = dl.Run(context.TODO(),url)
 
