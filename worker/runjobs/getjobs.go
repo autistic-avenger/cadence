@@ -22,6 +22,7 @@ func FetchJob(rc *redis.Client) {
 	for {
 		job, _ := rc.RPop(context.Background(),queueName).Result()
 		if job != ""{
+			fmt.Println("[EXECUTING] :",job)
 			go ExecJob(dbConn,job)
 		}
 		time.Sleep(3*time.Second)

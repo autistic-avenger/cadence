@@ -9,6 +9,7 @@ import (
 )
 
 func ExecJob(dbConn *sql.DB, jobID string) {
+	fmt.Println("[GETTING URL] :",jobID)
 	url ,err := db.GetVideoUrl(jobID,dbConn)
 	if err!=nil{
 		fmt.Println("Error Getting Video URL !")
@@ -17,15 +18,18 @@ func ExecJob(dbConn *sql.DB, jobID string) {
 
 
 	db.AlterJobStatus(dbConn,jobID,"downloading")
-	
+	fmt.Println("[DOWNLOADING] :",jobID)
+
 	err = downloader.DownloadVideo(url,jobID)
 	if err!=nil{
-		fmt.Println("DOWNLOADING [ERROR]: ",err)
+		fmt.Println("[ERROR]: ",err)
 		err = db.AlterJobStatus(dbConn,jobID,"failed")
 		if err!=nil{
 			fmt.Println("Error Altering JOB Status")
 		}
+		return
 	}
+	fmt.Println("[DONE] :",jobID)
 
 
 }
