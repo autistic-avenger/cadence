@@ -15,7 +15,7 @@ var queueName string = "videoJobs"
 func FetchJob(rc *redis.Client) {
 	dbConn,err := db.ConnectDB()
 	if err!=nil{
-		fmt.Println("Error Connecting to Db!")
+		fmt.Println("Error Connecting to Db!",err)
 		os.Exit(1);
 	}
 

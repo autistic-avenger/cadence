@@ -40,7 +40,7 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
                     jobID:jobId
                 }
             ) 
-            setJobCurrentStatus("completed")
+            setJobCurrentStatus("queued")
         }catch(error){
             if (axios.isAxiosError(error)){      
                 toast.error(error.response?.data.error)
@@ -84,27 +84,30 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
                         </div>
 
                         <div className='h-12 flex justify-end w-full shrink-0'>
-                            <div className={`h-full cursor-pointer active:bg-green-400 flex justify-center items-center w-25 rounded-xl bg-green-300 active:scale-95 duration-200
-                            ${jobCurrentStatus=="pending" || jobCurrentStatus == "completed"?"":"pointer-events-none"}
-                            `}
-                            onClick={handleCreate}
-                            >
-                                {jobCurrentStatus != "pending" ? (
-                                    jobCurrentStatus == "completed" ? (
-                                    <span className="font-[Caacupe_One] text-2xl  select-none ">
-                                        View Clip
-                                    </span>
+
+                            {jobCurrentStatus !="failed" && 
+                                <div className={`h-full cursor-pointer active:bg-green-400 flex justify-center items-center w-25 rounded-xl bg-green-300 active:scale-95 duration-200
+                                ${jobCurrentStatus=="pending" || jobCurrentStatus == "completed"?"":"pointer-events-none"}
+                                `}
+                                onClick={handleCreate}
+                                >
+                                    {jobCurrentStatus != "pending" ? (
+                                        jobCurrentStatus == "completed" ? (
+                                        <span className="font-[Caacupe_One] text-2xl  select-none ">
+                                            View Clip
+                                        </span>
+                                        ) : (
+                                        <span className="animate-spin ">
+                                            <FaSpinner className="text-black w-7 h-7" />
+                                        </span>
+                                        )
                                     ) : (
-                                    <span className="animate-spin ">
-                                        <FaSpinner className="text-black w-7 h-7" />
-                                    </span>
-                                    )
-                                ) : (
-                                    <span className="font-[Caacupe_One] text-2xl  select-none ">
-                                    Create
-                                    </span>
-                                )}
-                            </div>
+                                        <span className="font-[Caacupe_One] text-2xl  select-none ">
+                                        Create
+                                        </span>
+                                    )}
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
