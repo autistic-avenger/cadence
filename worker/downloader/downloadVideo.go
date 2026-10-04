@@ -17,6 +17,7 @@ func DownloadVideo(url string,jobId string) error {
 	}
 
 	dl := ytdlp.New().
+		CookiesFromBrowser("firefox").
 		FormatSort("res,ext:mp4:m4a").
 		RecodeVideo("mp4").
 		Output(outputDir + "/video.%(ext)s")
