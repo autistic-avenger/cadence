@@ -1,21 +1,20 @@
 package transcriber
 
 import (
-	"os/exec"
+	"cadence-worker/downloader"
 	"path/filepath"
 )
 
-func TransCribe(jobID string) error {
-	IODir,err := filepath.Abs("./jobDataStore/"+jobID)
+func TransCribe(jobID string,url string) error {
+	outputDir,err := filepath.Abs("./jobDataStore/"+jobID)
 	if err!=nil{
 		return err
 	}
 
-	IOpath := IODir+"/video.mp4"
-	cmd := exec.Command("whisper",IOpath,"--model","tiny","--output_dir",IODir,"--output_format","srt")
-	err = cmd.Run()
+	err = downloader.DownloadSubtitle(outputDir,url)
 	if err!=nil{
 		return err
 	}
+	
 	return nil
 }
