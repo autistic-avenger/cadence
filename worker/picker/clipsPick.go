@@ -32,7 +32,7 @@ func PickClips(jobID string) (ClipResponse, error) {
 		openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
 	)
 
-	llmModel := "google/gemini-2.5-flash-lite"
+	llmModel := "google/gemini-2.5-flash"
 
 
 	if err!=nil{
