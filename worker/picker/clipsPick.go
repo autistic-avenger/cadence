@@ -9,6 +9,7 @@ import (
 
 	openrouter "github.com/OpenRouterTeam/go-sdk"
 	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"github.com/OpenRouterTeam/go-sdk/optionalnullable"
 )
 
 type Clip struct {
@@ -32,8 +33,8 @@ func PickClips(jobID string) (ClipResponse, error) {
 		openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
 	)
 
-	llmModel := "google/gemini-2.5-flash"
-
+	llmModel := "qwen/qwen3.8-27b:free"
+	maxToken := int64(5000)
 
 	if err!=nil{
 		return ClipResponse{},err
@@ -48,6 +49,7 @@ func PickClips(jobID string) (ClipResponse, error) {
 	ctx := context.Background()
 	res, err := openS.Chat.Send(ctx, components.ChatRequest{
 		Model: &llmModel,
+		MaxTokens: optionalnullable.From(&maxToken),
 		Messages: []components.ChatMessages{
 			components.CreateChatMessagesSystem(
 				components.ChatSystemMessage{
