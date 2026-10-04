@@ -33,6 +33,9 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
     }
 
     async function handleCreate(){
+        if (jobCurrentStatus== "completed"){
+            return
+        }
         try{
             await axios.post(process.env.NEXT_PUBLIC_API_URL+"/api/create",
                 {
