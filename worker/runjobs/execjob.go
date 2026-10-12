@@ -54,8 +54,15 @@ func ExecJob(dbConn *sql.DB, jobID string) {
 		fmt.Println(err)
 		return 
 	}
+
+	count := 1
+	for _,clip := range clips.Clips{
+		fmt.Printf("COUNT:%d+START:%s+END:%s+TITLE:%s\n",count,clip.Start,clip.End,clip.Title)
+		count++
+	}
+
 	
-	fmt.Printf("[GOT %d CLIPS] :%s\n",len(clips.Clips),jobID)
+
 	fmt.Println("[COMPLETED] :",jobID)
 	db.AlterJobStatus(dbConn,jobID,"completed")
 
