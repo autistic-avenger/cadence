@@ -15,6 +15,9 @@ func TransCribe(jobID string,url string) error {
 	if err!=nil{
 		return err
 	}
-	
+	err = CleanSubtitiles(outputDir)
+	if err!=nil{
+		return err
+	}
 	return nil
 }

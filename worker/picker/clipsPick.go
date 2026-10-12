@@ -33,7 +33,7 @@ func PickClips(jobID string) (ClipResponse, error) {
 		openrouter.WithSecurity(os.Getenv("OPENROUTER_API_KEY")),
 	)
 
-	llmModel := "qwen/qwen3.8-27b:free"
+	llmModel := "google/gemma-4-31b-it:free"
 	maxToken := int64(5000)
 
 	if err!=nil{
