@@ -10,6 +10,7 @@ import (
 
 	openrouter "github.com/OpenRouterTeam/go-sdk"
 	"github.com/OpenRouterTeam/go-sdk/models/components"
+	"github.com/OpenRouterTeam/go-sdk/models/operations"
 	"github.com/OpenRouterTeam/go-sdk/optionalnullable"
 )
 
@@ -87,6 +88,8 @@ func PickClips(jobID string) (ClipResponse, error) {
 
 	totalBatches := (len(nonEmptyLines) + batchSize - 1) / batchSize
 
+	var res *operations.SendChatCompletionRequestResponse
+
 	successfulBatches := 0
 	for i := 0; i < len(nonEmptyLines); i += batchSize {
 		end := i + batchSize
@@ -103,33 +106,42 @@ func PickClips(jobID string) (ClipResponse, error) {
 		batchNum := (i / batchSize) + 1
 		fmt.Printf("[PICKING] Processing batch %d/%d\n", batchNum, totalBatches)
 
-		ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
-		res, err := openS.Chat.Send(ctx, components.ChatRequest{
-			Model:     &llmModel,
-			MaxTokens: optionalnullable.From(&maxToken),
-			Messages: []components.ChatMessages{
-				components.CreateChatMessagesSystem(
-					components.ChatSystemMessage{
-						Content: components.CreateChatSystemMessageContentStr(
-							systemPrompt,
-						),
-						Role: components.ChatSystemMessageRoleSystem,
-					},
-				),
-				components.CreateChatMessagesUser(
-					components.ChatUserMessage{
-						Content: components.CreateChatUserMessageContentStr(
-							"Here is the transcript:\n" + batchText,
-						),
-						Role: components.ChatUserMessageRoleUser,
-					},
-				),
-			},
-		}, nil)
-		cancel()
+		maxRetries := 5
+		for i := 0;i<maxRetries;i++{
+			delay := 40*i
+			time.Sleep(time.Duration(delay)*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+			res, err = openS.Chat.Send(ctx, components.ChatRequest{
+				Model:     &llmModel,
+				MaxTokens: optionalnullable.From(&maxToken),
+				Messages: []components.ChatMessages{
+					components.CreateChatMessagesSystem(
+						components.ChatSystemMessage{
+							Content: components.CreateChatSystemMessageContentStr(
+								systemPrompt,
+							),
+							Role: components.ChatSystemMessageRoleSystem,
+						},
+					),
+					components.CreateChatMessagesUser(
+						components.ChatUserMessage{
+							Content: components.CreateChatUserMessageContentStr(
+								"Here is the transcript:\n" + batchText,
+							),
+							Role: components.ChatUserMessageRoleUser,
+						},
+					),
+				},
+			}, nil)
+			cancel()
+			if err==nil{
+				break
+			}
+		}
+
 
 		if err != nil {
-			fmt.Printf("[BATCH FAIL] Batch %d/%d\n", batchNum, totalBatches)
+			fmt.Printf("[BATCH FAIL] Batch %d/%d\n", batchNum, totalBatches,err)
 			time.Sleep(500 * time.Millisecond)
 			continue
 		}
@@ -182,7 +194,7 @@ func PickClips(jobID string) (ClipResponse, error) {
 func CreateJson(jobID string,clips ClipResponse)error {
  	clipsPath := "./jobDataStore/" + jobID + "/clips.json"
 
-	jsonByteStream,err := json.Marshal(clips.Clips)
+	jsonByteStream,err := json.MarshalIndent(clips.Clips,""," ")
 	if err!=nil{
 		return err
 	}
