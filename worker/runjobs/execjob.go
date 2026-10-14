@@ -1,6 +1,7 @@
 package runjobs
 
 import (
+	"cadence-worker/cutter"
 	"cadence-worker/db"
 	"cadence-worker/downloader"
 	"cadence-worker/picker"
@@ -54,6 +55,15 @@ func ExecJob(dbConn *sql.DB, jobID string) {
 		return 
 	}
 
+	fmt.Println("[CUTTING] :",jobID)
+	err = cutter.MakeClips(jobID,clips)
+	if err!=nil{	
+		db.AlterJobStatus(dbConn,jobID,"failed")
+		fmt.Println(err)
+		return
+	}	
+
+	fmt.Println("[BUILD JSON] :",jobID)
 	err = picker.CreateJson(jobID,clips)
 	if err!=nil{	
 		db.AlterJobStatus(dbConn,jobID,"failed")

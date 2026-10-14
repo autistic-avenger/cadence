@@ -18,6 +18,7 @@ type Clip struct {
 	Start string `json:"start"`
 	End   string `json:"end"`
 	Title string `json:"title"`
+	Location string `json:"location,omitempty"`
 }
 
 type ClipResponse struct {
@@ -194,7 +195,7 @@ func PickClips(jobID string) (ClipResponse, error) {
 func CreateJson(jobID string,clips ClipResponse)error {
  	clipsPath := "./jobDataStore/" + jobID + "/clips.json"
 
-	jsonByteStream,err := json.MarshalIndent(clips.Clips,""," ")
+	jsonByteStream,err := json.MarshalIndent(clips.Clips," ","    ")
 	if err!=nil{
 		return err
 	}
