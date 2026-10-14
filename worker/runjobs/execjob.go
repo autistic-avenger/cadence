@@ -51,17 +51,14 @@ func ExecJob(dbConn *sql.DB, jobID string) {
 	clips ,err := picker.PickClips(jobID)
 	if err!=nil{
 		db.AlterJobStatus(dbConn,jobID,"failed")
-		fmt.Println(err)
 		return 
 	}
 
-	count := 1
-	for _,clip := range clips.Clips{
-		fmt.Printf("COUNT:%d+START:%s+END:%s+TITLE:%s\n",count,clip.Start,clip.End,clip.Title)
-		count++
-	}
-
-	
+	err = picker.CreateJson(jobID,clips)
+	if err!=nil{	
+		db.AlterJobStatus(dbConn,jobID,"failed")
+		return
+	}	
 
 	fmt.Println("[COMPLETED] :",jobID)
 	db.AlterJobStatus(dbConn,jobID,"completed")

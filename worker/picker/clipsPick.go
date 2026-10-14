@@ -176,3 +176,20 @@ func PickClips(jobID string) (ClipResponse, error) {
 	fmt.Printf("[PICKING] CLIPS Collected:%d\n", len(clipsArray.Clips))
 	return clipsArray, nil
 }
+
+
+
+func CreateJson(jobID string,clips ClipResponse)error {
+ 	clipsPath := "./jobDataStore/" + jobID + "/clips.json"
+
+	jsonByteStream,err := json.Marshal(clips.Clips)
+	if err!=nil{
+		return err
+	}
+	err = os.WriteFile(clipsPath,jsonByteStream,0644)
+	if err!=nil{
+		return err
+	}
+
+	return nil 
+}
