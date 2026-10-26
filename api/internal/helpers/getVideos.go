@@ -40,7 +40,6 @@ func GetVideos(c *gin.Context) {
 		c.String(http.StatusBadRequest,"DB Fetching videos error!")
 		return
 	}
-	vids = Reverse(vids)
 
 	c.JSON(http.StatusOK,vids)
 }

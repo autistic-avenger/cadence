@@ -13,6 +13,7 @@ func CreateTable(dbCursor *sql.DB) error {
 			creator VARCHAR(60),
 			videoid VARCHAR(20),
 			jobstatus VARCHAR(20)
+			created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 		)`
 
 	_, err := dbCursor.Exec(createTable)

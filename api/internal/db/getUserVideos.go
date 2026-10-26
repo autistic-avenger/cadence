@@ -6,7 +6,7 @@ import (
 
 func DbGetVideos(dbCursor *sql.DB, email string)([]YoutubeDbInfo,error){
 	var vids []YoutubeDbInfo
-	query := `SELECT * FROM userVideos WHERE email = $1`
+	query := `SELECT * FROM userVideos WHERE email = $1 ORDER BY created_at DESC`
 
 	rows,err := dbCursor.Query(query,email)
 	if err!=nil{
