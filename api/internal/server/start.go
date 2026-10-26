@@ -3,10 +3,12 @@ package server
 import (
 	"cadance/internal/auth"
 	"cadance/internal/db"
+	getclips "cadance/internal/getClips"
 	"cadance/internal/helpers"
 	"cadance/internal/worker"
 	youtubeapi "cadance/internal/youtubeAPI"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/gin-contrib/cors"
@@ -27,6 +29,7 @@ func initRedisClient() *redis.Client {
 func StartBackend(port string) error {	
 	RedisClient := initRedisClient()
 	r := gin.Default()	
+	r.StaticFS("/api/fs", http.Dir("../worker/jobDataStore"))
 
 	if port == ""{
 		return fmt.Errorf("Port not Present.")
@@ -57,6 +60,8 @@ func StartBackend(port string) error {
 	r.POST("/api/create",worker.QueueJob(RedisClient))
 
 	r.GET("/api/jobstatus",worker.GetStatusWrapper(dbConn))
+
+	r.GET("/api/clips",getclips.GetClips)
 
 	err = r.Run(":"+port)
 	

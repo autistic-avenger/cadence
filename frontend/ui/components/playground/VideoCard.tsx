@@ -3,12 +3,14 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { FaSpinner } from 'react-icons/fa6'
 import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 type JobStatus = "pending" | "queued" | "downloading" | "transcribing" | "picking" | "completed" | "failed"
 
 
 export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInfo) {
     const [jobCurrentStatus ,setJobCurrentStatus] = useState<JobStatus>("pending")
+    const router = useRouter()
 
     useEffect(() => {
         getStatus()
@@ -32,9 +34,10 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
         }
     }
 
-    async function handleCreate(){
+    
+    async function handleClick(){
         if (jobCurrentStatus== "completed"){
-            return
+            router.push(`/view/${jobId}`)
         }
         try{
             await axios.post(process.env.NEXT_PUBLIC_API_URL+"/api/create",
@@ -92,7 +95,7 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
                                 <div className={`h-full cursor-pointer active:bg-green-400 flex justify-center items-center w-25 rounded-xl bg-green-300 active:scale-95 duration-200
                                 ${jobCurrentStatus=="pending" || jobCurrentStatus == "completed"?"":"pointer-events-none"}
                                 `}
-                                onClick={handleCreate}
+                                onClick={handleClick}
                                 >
                                     {jobCurrentStatus != "pending" ? (
                                         jobCurrentStatus == "completed" ? (
