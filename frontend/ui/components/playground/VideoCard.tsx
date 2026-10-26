@@ -38,6 +38,7 @@ export default function VideoCard({thumbnailUrl,title,url,creator,jobId}:cardInf
     async function handleClick(){
         if (jobCurrentStatus== "completed"){
             router.push(`/view/${jobId}`)
+            return
         }
         try{
             await axios.post(process.env.NEXT_PUBLIC_API_URL+"/api/create",
