@@ -29,9 +29,11 @@
 ## Demo
 
 <p align="center">
-  <video src="DEMO_COMPRESSED.mp4" controls="controls" width="100%">
-    <a href="DEMO_COMPRESSED.mp4">Watch Demo Video</a>
-  </video>
+ 
+
+https://github.com/user-attachments/assets/2622e07d-89ce-43a0-bff5-97a27b239eee
+
+
 </p>
 
 ---
