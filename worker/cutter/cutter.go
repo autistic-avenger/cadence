@@ -20,11 +20,13 @@ func MakeClips(jobID string, clips picker.ClipResponse) error {
 		outputPath := fmt.Sprintf("./jobDataStore/%s/clips/clip%d.mp4",jobID,i+1)
 		
 		cmd := exec.Command("ffmpeg",
-		"-i",inputPath,
-		"-ss",clip.Start,
-		"-to",clip.End,
-		"-c","copy",
-		outputPath,
+			"-y",
+			"-ss", clip.Start,
+			"-to", clip.End,
+			"-i", inputPath,
+			"-c", "copy",
+			"-avoid_negative_ts", "make_zero",
+			outputPath,
 		)
 
 		err := cmd.Run()
