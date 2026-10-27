@@ -28,7 +28,7 @@ Every valid clip must contain three elements:
 - START: Anchor at the earliest natural sentence introducing the topic. Never start on dangling conjunctions ("And so...", "Like I said...", "Because...").
 - END: Anchor immediately after the resolution or final reaction has landed. Never cut mid-sentence, mid-story, or before the reaction.
 - DURATION: Typically 30 seconds to 4 minutes. A complete 3-minute scene is always better than an incomplete 45-second clip. Do not cut context just to shorten duration.
-- FORMAT: Exact "HH:MM:SS" matching the timestamps in the transcript. Start must be strictly before End.
+- FORMAT: Both `start` and `end` must be strings in exact `HH:MM:SS` format matching the transcript timestamps. `HH:MM:SS` is strict: do not include fractional seconds, decimal points, milliseconds, floats, or any extra characters in either timestamp. Never output timestamps as numbers; the final value must be a quoted `HH:MM:SS` string. Start must be strictly before End.
 
 ## TITLES
 - 4 to 8 words.
@@ -54,6 +54,8 @@ Output ONLY a valid JSON object matching this schema:
     }
   ]
 }
+
+Before returning the JSON, verify that every `start` and `end` value matches `^\d{2}:\d{2}:\d{2}$`. If any value contains a decimal point or fractional seconds, correct it before responding.
 
 If no scene in the segment satisfies the criteria, return:
 {

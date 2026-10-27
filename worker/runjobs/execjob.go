@@ -54,6 +54,13 @@ func ExecJob(dbConn *sql.DB, jobID string) {
 		db.AlterJobStatus(dbConn,jobID,"failed")
 		return 
 	}
+	
+	fmt.Println("[BUILD JSON] :",jobID)
+	err = picker.CreateJson(jobID,clips)
+	if err!=nil{	
+		db.AlterJobStatus(dbConn,jobID,"failed")
+		return
+	}	
 
 	fmt.Println("[CUTTING] :",jobID)
 	err = cutter.MakeClips(jobID,clips)
@@ -63,12 +70,6 @@ func ExecJob(dbConn *sql.DB, jobID string) {
 		return
 	}	
 
-	fmt.Println("[BUILD JSON] :",jobID)
-	err = picker.CreateJson(jobID,clips)
-	if err!=nil{	
-		db.AlterJobStatus(dbConn,jobID,"failed")
-		return
-	}	
 
 	fmt.Println("[COMPLETED] :",jobID)
 	db.AlterJobStatus(dbConn,jobID,"completed")
