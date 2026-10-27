@@ -4,7 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
+	"os/exec"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -15,9 +19,10 @@ import (
 )
 
 type Clip struct {
-	Start string `json:"start"`
-	End   string `json:"end"`
-	Title string `json:"title"`
+	Start    string `json:"start"`
+	End      string `json:"end"`
+	Title    string `json:"title"`
+	Score    int    `json:"score,omitempty"`
 	Location string `json:"location,omitempty"`
 }
 
@@ -38,12 +43,55 @@ func extractJSON(s string) string {
 	return s
 }
 
+func getVideoDuration(jobID string) float64 {
+	videoPath := "./jobDataStore/" + jobID + "/video.mp4"
+	cmd := exec.Command("ffprobe",
+		"-v", "error",
+		"-show_entries", "format=duration",
+		"-of", "default=noprint_wrappers=1:nokey=1",
+		videoPath,
+	)
+	out, err := cmd.Output()
+	if err != nil {
+		return 30
+	}
+	sec, err := strconv.ParseFloat(strings.TrimSpace(string(out)), 64)
+	if err != nil {
+		return 30
+	}
+	return sec / 60.0
+}
+
+func targetClipCount(mins float64) int {
+	if mins <= 20 {
+		c := int(math.Round(mins / 3.5))
+		if c < 2 { return 2 }
+		if c > 6 { return 6 }
+		return c
+	}
+	c := 5 + int(math.Round((mins-20)*(15.0/160.0)))
+	if c > 20 { return 20 }
+	return c
+}
+
+func parseTS(ts string) int {
+	p := strings.Split(ts, ":")
+	if len(p) != 3 { return 0 }
+	h, _ := strconv.Atoi(p[0])
+	m, _ := strconv.Atoi(p[1])
+	s, _ := strconv.Atoi(p[2])
+	return h*3600 + m*60 + s
+}
+
 func PickClips(jobID string) (ClipResponse, error) {
 	vttPath := "./jobDataStore/" + jobID + "/video.vtt"
 	transcript, err := os.ReadFile(vttPath)
 	if err != nil {
 		return ClipResponse{}, fmt.Errorf("failed to read transcript file %s: %w", vttPath, err)
 	}
+
+	durationMins := getVideoDuration(jobID)
+	target := targetClipCount(durationMins)
 
 	apiKey := strings.TrimSpace(os.Getenv("OPENROUTER_API_KEY"))
 	if apiKey == "" {
@@ -59,7 +107,7 @@ func PickClips(jobID string) (ClipResponse, error) {
 		llmModel = "google/gemma-4-26b-a4b-it:free"
 	}
 
-	batchSize := 300
+	batchSize := 500
 
 	maxToken := int64(3000)
 
@@ -142,7 +190,7 @@ func PickClips(jobID string) (ClipResponse, error) {
 
 
 		if err != nil {
-			fmt.Printf("[BATCH FAIL] Batch %d/%d\n", batchNum, totalBatches,err)
+			fmt.Printf("[BATCH FAIL] Batch %d/%d: %v\n", batchNum, totalBatches, err)
 			time.Sleep(500 * time.Millisecond)
 			continue
 		}
@@ -186,7 +234,18 @@ func PickClips(jobID string) (ClipResponse, error) {
 		return ClipResponse{}, fmt.Errorf("failed to process any batch")
 	}
 
-	fmt.Printf("[PICKING] CLIPS Collected:%d\n", len(clipsArray.Clips))
+	sort.Slice(clipsArray.Clips, func(i, j int) bool {
+		return clipsArray.Clips[i].Score > clipsArray.Clips[j].Score
+	})
+
+	if len(clipsArray.Clips) > target {
+		clipsArray.Clips = clipsArray.Clips[:target]
+	}
+
+	sort.Slice(clipsArray.Clips, func(i, j int) bool {
+		return parseTS(clipsArray.Clips[i].Start) < parseTS(clipsArray.Clips[j].Start)
+	})
+
 	return clipsArray, nil
 }
 

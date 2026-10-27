@@ -35,6 +35,13 @@ Every valid clip must contain three elements:
 - Specific, engaging, and curiosity-driven without misleading clickbait.
 - No ALL CAPS, no emojis, no hashtags, no generic filler words.
 
+## SCORING
+Rate each clip from 1 to 100 based on:
+- Hook strength: How quickly does it grab attention in the first 5 seconds?
+- Emotional payoff: Does it deliver surprise, humor, insight, or a strong reaction?
+- Standalone shareability: Would someone share this clip without needing the full video?
+Be highly selective. Only return the 2 to 3 BEST candidates per segment. Quality over quantity.
+
 ## OUTPUT FORMAT
 Output ONLY a valid JSON object matching this schema:
 {
@@ -42,7 +49,8 @@ Output ONLY a valid JSON object matching this schema:
     {
       "start": "HH:MM:SS",
       "end": "HH:MM:SS",
-      "title": "Specific Engaging Title"
+      "title": "Specific Engaging Title",
+      "score": 85
     }
   ]
 }
