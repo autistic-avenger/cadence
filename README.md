@@ -28,10 +28,10 @@
 
 ## Demo
 
-<p align="center"
-
-Uploading DEMO_COMPRESSED.mp4…
-
+<p align="center">
+  <video src="DEMO_COMPRESSED.mp4" controls="controls" width="100%">
+    <a href="DEMO_COMPRESSED.mp4">Watch Demo Video</a>
+  </video>
 </p>
 
 ---
